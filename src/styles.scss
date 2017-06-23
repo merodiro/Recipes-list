@@ -5,3 +5,15 @@ $bootstrap-sass-asset-helper: true;
 a {
   cursor: pointer
 }
+
+
+.form-group {
+  .ng-invalid.ng-dirty {
+    border: 1px solid $brand-danger;
+  }
+
+  .ng-valid.ng-dirty {
+    border: 1px solid $brand-success;
+  }
+
+}
