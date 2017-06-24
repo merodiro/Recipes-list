@@ -1,7 +1,7 @@
 <nav class="navbar navbar-default">
   <div class="container">
     <div class="navbar-header">
-      <a routerLink="/recipes" class="navbar-brand">Recipe Book</a>
+      <a routerLink="/" class="navbar-brand">Recipe Book</a>
     </div>
     <div class="collapse navbar-collapse in">
       <ul class="nav navbar-nav">
@@ -10,8 +10,8 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <ng-template [ngIf]="!authService.isAuthenticated()">
-          <li routerLinkActive="active"><a routerLink="/signup">Register</a></li>
-          <li routerLinkActive="active"><a routerLink="/signin">Login</a></li>
+          <li routerLinkActive="active"><a routerLink="/auth/signup">Register</a></li>
+          <li routerLinkActive="active"><a routerLink="/auth/signin">Login</a></li>
         </ng-template>
           <li *ngIf="authService.isAuthenticated()"><a (click)="onLogOut()">Logout</a></li>
         <li class="dropdown" appDropdown *ngIf="authService.isAuthenticated()">
