@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Component, OnInit } from '@angular/core';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { FirebaseListObservable } from 'angularfire2/database/firebase_list_observable';
 
 import { Recipe } from '../recipe.model';
 import { RecipeService } from '../recipe.service';
@@ -9,23 +10,15 @@ import { RecipeService } from '../recipe.service';
   templateUrl: './recipe-list.component.html',
   styleUrls: ['./recipe-list.component.scss']
 })
-export class RecipeListComponent implements OnInit, OnDestroy {
+export class RecipeListComponent implements OnInit {
 
-  recipes$: Subscription;
-  recipes: Recipe[];
+  recipes: FirebaseListObservable<Recipe[]>;
+
 
   constructor(private recipeService: RecipeService) { }
 
   ngOnInit() {
-    this.recipes = this.recipeService.getRecipes();
-    this.recipes$ = this.recipeService.recipes$
-      .subscribe((recipes: Recipe[]) => {
-        this.recipes = recipes;
-      })
-  }
-
-  ngOnDestroy() {
-    this.recipes$.unsubscribe();
+    this.recipes = this.recipeService.recipes;
   }
 
 }

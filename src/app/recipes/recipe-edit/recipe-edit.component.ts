@@ -22,12 +22,16 @@ export class RecipeEditComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
+
     this.route.params
       .subscribe((params: Params) => {
         this.editMode = !!params.id;
-        this.id = +params.id;
-        this.recipe = this.recipeService.getRecipe(this.id);
-        this.initForm();
+        this.id = params.id;
+        this.recipeService.getRecipe(this.id)
+          .subscribe(res => {
+            this.recipe = res
+            this.initForm();
+          })
       })
   }
 

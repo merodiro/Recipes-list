@@ -1,3 +1,3 @@
-<a class="btn btn-success" routerLink="new">New Recipe</a>
-<hr>
-<app-recipe-item *ngFor="let recipe of recipes; let i = index" [id]="i"></app-recipe-item>
+<a class="btn btn-success" routerLink="new" *appAuthView="true">New Recipe</a>
+<hr *appAuthView="true">
+<app-recipe-item *ngFor="let recipe of recipes | async; let i = index" [id]="recipe.$key" [recipe]="recipe"></app-recipe-item>

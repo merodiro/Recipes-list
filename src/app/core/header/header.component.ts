@@ -1,7 +1,7 @@
-import { AuthService } from '../../auth/auth.service';
-import { DataStorageService } from '../../shared/data-storage.service';
-
 import { Component, OnInit } from '@angular/core';
+import 'rxjs/add/operator/do';
+
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -10,19 +10,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private dataStorageService: DataStorageService,
-              public authService: AuthService) { }
+  isAuth: Boolean;
+
+  constructor(public authService: AuthService) { }
 
   ngOnInit() {
-  }
-
-  onSaveData() {
-    this.dataStorageService.storeRecipes()
-      .subscribe();
-  }
-
-  onFetchData() {
-    this.dataStorageService.getRecipes();
+    this.authService.user
+      .subscribe(authenticated => {
+        if (!authenticated) {
+          this.isAuth = false
+        } else {
+          this.isAuth = true
+        }
+      });
   }
 
   onLogOut() {

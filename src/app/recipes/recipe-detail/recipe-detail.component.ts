@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { FirebaseObjectObservable } from 'angularfire2/database/firebase_object_observable';
 
 import { Recipe } from '../recipe.model';
 import { RecipeService } from '../recipe.service';
@@ -11,7 +12,7 @@ import { RecipeService } from '../recipe.service';
 })
 export class RecipeDetailComponent implements OnInit {
 
-  recipe: Recipe;
+  recipe: FirebaseObjectObservable<Recipe>;
   id: number;
 
   constructor(private recipeService: RecipeService,
@@ -21,14 +22,16 @@ export class RecipeDetailComponent implements OnInit {
   ngOnInit() {
     this.route.params
       .subscribe((params: Params) => {
-        this.id = +params.id;
+        this.id = params.id;
         this.recipe = this.recipeService.getRecipe(this.id);
       })
 
   }
 
   onAddToShoppingList() {
-    this.recipeService.addIngredientToShoppingList(this.recipe.ingredients);
+    this.recipe.subscribe(recipe => {
+    this.recipeService.addIngredientToShoppingList(recipe.ingredients);
+    })
   }
 
   onDelete() {

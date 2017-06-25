@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { FirebaseListObservable } from 'angularfire2/database/firebase_list_observable';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/map';
 
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
@@ -8,42 +11,14 @@ import { Recipe } from './recipe.model';
 @Injectable()
 export class RecipeService {
 
-  recipes$ = new Subject<Recipe[]>()
+  recipes: FirebaseListObservable<Recipe[]>;
 
-  private recipes: Recipe[] = [
-    new Recipe(
-      'Tasty Schnitzel',
-      'A super-tasty Schnitzel - just awesome!',
-      'https://upload.wikimedia.org/wikipedia/commons/7/72/Schnitzel.JPG',
-      [
-        new Ingredient('Meat', 1),
-        new Ingredient('French Fries', 20)
-      ]
-    ),
-    new Recipe(
-      'Big Fat Burger',
-      'What else you need to say?',
-      'https://upload.wikimedia.org/wikipedia/commons/b/be/Burger_King_Angus_Bacon_%26_Cheese_Steak_Burger.jpg',
-      [
-        new Ingredient('Buns', 2),
-        new Ingredient('Meat', 1)
-      ]
-    ),
-  ];
-
-  constructor(private slService: ShoppingListService) { }
-
-  setRecipes(recipes: Recipe[]) {
-    this.recipes = recipes;
-    this.recipes$.next([...this.recipes]);
+  constructor(private slService: ShoppingListService, private db: AngularFireDatabase) {
+    this.recipes = db.list('/recipes')
   }
 
-  getRecipes(): Recipe[] {
-    return [...this.recipes];
-  }
-
-  getRecipe(id: number): Recipe {
-    return this.recipes[id];
+  getRecipe(id) {
+    return this.db.object(`recipes/${id}`);
   }
 
   addIngredientToShoppingList(ingredients: Ingredient[]): void {
@@ -52,16 +27,13 @@ export class RecipeService {
 
   addRecipe(recipe: Recipe) {
     this.recipes.push(recipe);
-    this.recipes$.next([...this.recipes]);
   }
 
-  updateRecipe(index: number, recipe: Recipe) {
-    this.recipes[index] = recipe;
-    this.recipes$.next([...this.recipes]);
+  updateRecipe(index, recipe: Recipe) {
+    this.recipes.update(index, recipe);
   }
 
-  deleteRecipe(index: number) {
-    this.recipes.splice(index, 1);
-    this.recipes$.next([...this.recipes]);
+  deleteRecipe(index) {
+    this.recipes.remove(index);
   }
 }
